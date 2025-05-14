@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, } from "react";
 import { Text, useColorScheme, View } from "react-native";
 import { FadeIn } from "./ui/utils/fadeIn";
 import { label } from "@bacons/apple-colors";
@@ -11,102 +11,24 @@ import { MovieSkeleton } from "./ui/skeletonLoaders/movieSkeleton";
 import Lists from "./ui/list/lists";
 import * as AC from "@bacons/apple-colors";
 import RenderStarColors from "./ui/renderStars";
+import ParallaxScrollView from "./ui/parallax-scroll-view";
 
 function MediaHero({ media, type }: { media: any; type: MediaType }) {
   const colorScheme = useColorScheme();
 
-
   return (
     <View style={{ marginBottom: 24 }}>
-      <View
-        style={{
-          backgroundColor: AC.systemGray5,
-          width: "100%",
-          height: 300,
-        }}
-      >
-        {media.backdrop_path && (
-          <View
-            style={{
-              position: "relative",
-              width: "100%",
-              height: 300,
-            }}
-          >
-            <Image
-              contentFit="cover"
-              source={{
-                uri: `https://image.tmdb.org/t/p/w1280${media.backdrop_path}`,
-              }}
-              style={{
-                width: "100%",
-                height: 300,
-              }}
-              transition={300}
-            />
 
-            <LinearGradient
-              colors={
-                colorScheme === "dark"
-                  ? ["transparent", "rgba(0,0,0,5)"]
-                  : ["transparent", "rgba(255,255,255)"]
-              } 
-              style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: 150,
-              }}
-            />
-          </View>
-        )}
-      </View>
 
       <View
         style={{
           padding: 16,
-          marginTop: -60,
           flexDirection: "row",
         }}
       >
-        <View
-          style={{
-            backgroundColor: AC.systemGray5,
-            width: 100,
-            height: 150,
-            borderRadius: 8,
-            marginRight: 16,
-          }}
-        >
-          {media.poster_path && (
-            <Image
-              source={{
-                uri: `https://image.tmdb.org/t/p/w780${media.poster_path}`,
-              }}
-              style={{
-                width: 100,
-                height: 150,
-                borderRadius: 8,
-                marginRight: 16,
-              }}
-              transition={300}
-            />
-          )}
-        </View>
-
+       
         <View style={{ flex: 1, justifyContent: "flex-end", marginBottom: 8 }}>
-          <Text
-            numberOfLines={1}
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              color: label,
-              marginBottom: 8,
-            }}
-          >
-            {type === "movie" ? media.title : media.name}
-          </Text>
+          
           <Text
             style={{
               fontSize: 15,
@@ -129,28 +51,12 @@ function MediaHero({ media, type }: { media: any; type: MediaType }) {
   );
 }
 
-const MediaDetails = ({ id, type }: { id: string; type: MediaType }) => {
-  const [media, setMedia] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const MediaDetails = ({ media, type}: { media: any, type: MediaType}) => {
+
   const title = type === "movie" ? media?.title : media?.name;
 
-  useEffect(() => {
-    const loadMediaDetails = async () => {
-      try {
-        const mediaData = await fetchApiData<any>(
-          `https://api.themoviedb.org/3/${type}/${id}`
-        );
-        setMedia(mediaData);
-        setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
+  // console.log(media.overview)
 
-    loadMediaDetails();
-  }, [id, type]);
 
   const listItems = media
     ? [
@@ -207,33 +113,31 @@ const MediaDetails = ({ id, type }: { id: string; type: MediaType }) => {
       ]
     : [];
 
-  if (loading) return <MovieSkeleton />;
+  // if (loading) return <MovieSkeleton />;
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: title || "Movie",
-          headerStyle: {
-            backgroundColor: AC.systemFill.toString(),
-          },
-        }}
-      />
+      
 
-      <FadeIn>
+      {/* <FadeIn>
         <MediaHero media={media} type={type} />
-      </FadeIn>
+      </FadeIn> */}
 
-      <FadeIn>
+      {/* <FadeIn>
         <View style={{ marginBottom: 24, paddingHorizontal: 16 }}>
           <Text style={{ fontSize: 16, color: label, lineHeight: 24 }}>
             {media.overview}
           </Text>
         </View>
-      </FadeIn>
+      </FadeIn> */}
 
       <FadeIn>
+        <View style={{marginTop: 24}}>
         <Lists title="About" items={listItems} />
+        </View>
+
+        
+       
       </FadeIn>
     </>
   );

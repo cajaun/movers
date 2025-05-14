@@ -1,24 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { StyleSheet, View } from "react-native";
 import Constants from "expo-constants";
+import { useHeaderSearch } from "@/hooks/useHeaderSearch"; // Update the import path as needed
 import * as AC from "@bacons/apple-colors";
 import { SearchSkeleton } from "@/components/ui/skeletonLoaders/searchCards";
 import SearchSection from "@/functions/renderSearchContents";
 import CategoryCard from "@/components/ui/cards/categoryCard";
-import { ScrollView, StyleSheet, View } from "react-native";
-
-
-const TabData = [
-  { id: "0", title: "Top results" },
-  { id: "1", title: "Movies" },
-  { id: "2", title: "Shows" },
-  { id: "3", title: "All" },
-];
 
 const SearchScreen = () => {
-  const { query } = useLocalSearchParams();
-  const searchQuery = Array.isArray(query) ? query[0] : query;
-  const [activeTab, setActiveTab] = useState("");
+  const searchQuery = useHeaderSearch({ placeholder: "Search Shows, Movies, and More",   hideWhenScrolling: false, });
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const apiKey = Constants.expoConfig?.extra?.TMDB_READ_API_KEY;
@@ -38,7 +28,6 @@ const SearchScreen = () => {
           )}&include_adult=false&language=en-US&page=1&api_key=${apiKey}`
         );
         const data = await response.json();
-        // console.log(data)
         setResults(data.results || []);
       } catch (error) {
         console.error("Error fetching search results:", error);
@@ -51,32 +40,17 @@ const SearchScreen = () => {
 
     return () => clearTimeout(debounce);
   }, [searchQuery, apiKey]);
-  return (
-<View>
-   
-      {/* Tab Bar */}
-      {/* <TabBar
-        tabs={TabData}
-        onChangeTab={setActiveTab}
-        activeTab={activeTab}
-        tabBarContainerStyle={styles.tabBarContainerStyle}
-        tabStyle={[styles.tabStyle]}
-        indicatorStyle={[styles.indicatorStyle]}
-        tabBarTextStyle={[styles.tabBarTextStyle]}
-      /> */}
 
-        {!searchQuery && (
-          <CategoryCard />
-        )}
-          
- 
- <React.Suspense fallback={<SearchSkeleton />}>
-      <SearchSection
-        results={results}
-        loading={loading}
-        searchQuery={searchQuery}
-      />
-    </React.Suspense>
+  return (
+    <View style={styles.container}>
+      {!searchQuery && <CategoryCard />}
+      <React.Suspense fallback={<SearchSkeleton />}>
+        <SearchSection
+          results={results}
+          loading={loading}
+          searchQuery={searchQuery}
+        />
+      </React.Suspense>
     </View>
   );
 };

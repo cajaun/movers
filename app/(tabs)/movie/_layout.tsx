@@ -23,6 +23,7 @@ const MovieLayout = () => {
         },
       }}
       />
+
          
     </Stack>
  

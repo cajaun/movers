@@ -5,7 +5,7 @@ import { label } from "@bacons/apple-colors";
 import TouchableBounce from "../utils/touchableBounce";
 
 export const CastCard = ({ person }: { person: any }) => (
-  <Link key={person.id} href={`/person/${person.id}`} asChild push>
+
   <TouchableBounce>
     <View className="" style={{ marginRight: 4, width: 100 }}>
       <Image
@@ -32,5 +32,5 @@ export const CastCard = ({ person }: { person: any }) => (
       </Text>
     </View>
     </TouchableBounce>
-  </Link>
+
 );
